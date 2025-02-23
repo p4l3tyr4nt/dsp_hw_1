@@ -1,0 +1,44 @@
+
+.sidenav {
+        height: 100%;
+        width: 300px;
+        display: flex ;
+        flex-direction: column ;
+        justify-content: space-between ;
+        position: fixed;
+        z-index: 1002;
+        top: 0px;
+        left: 0px;
+        background-color: #1F2229;
+        padding: 15px;
+}
+
+#graph-content {
+        height: 100%;
+        margin: auto;
+        display: block;
+        position: fixed;
+        top: 0px;
+        left: 300px;
+        right: 0px;
+        z-index: 1000;
+        background-color: #1F2229;
+}
+
+.input-menu {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between;
+}
+
+.input-btn {
+        width: 30%;
+        flex-grow: 1;
+        margin: 1px;
+}
+
+.hidden {
+        visibility: hidden;
+}
