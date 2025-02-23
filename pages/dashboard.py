@@ -21,7 +21,7 @@ def index():
         ),
     ])
 
-    number_info = html.Div(children=
+    number_info = html.Div(id='number-info', children=
         [
             dbc.Label('Number: '),
             html.Div('', id='number'),
@@ -77,3 +77,23 @@ def num_click(_, mode, sample_rate):
     btn_index = eval(ctx.triggered[0]['prop_id'].split('.')[0])['index']
 
     return no_update, no_update
+
+@callback(
+    Input('btn-call', 'n_clicks'),
+    State('sample-rate-input', 'value'),
+    prevent_initial_call=True,
+)
+def call_click(_, sample_rate):
+    pass
+
+@callback(
+    Output('number-info', 'className'),
+    Input('mode-choice', 'value'),
+    prevent_initial_call=True,
+)
+def mode_choice(mode):
+    if mode == 'Single':
+        return 'number-info hidden'
+    elif mode == 'Multi':
+        return 'number-info'
+    return no_update
