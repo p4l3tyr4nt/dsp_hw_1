@@ -2,6 +2,8 @@ import dash
 from dash import Dash, html, dcc, callback, ctx, Output, Input, State, ALL, no_update
 import dash_bootstrap_components as dbc
 
+from dtmf import get_signal
+
 dash.register_page(__name__, path='/')
 
 def layout():
@@ -55,7 +57,7 @@ def index():
         className='sidenav text-white'
     )
 
-    graph = dcc.Graph(id='graph-content', config={'displayModeBar': False})
+    graph = dcc.Graph(id='graph-content')
 
     return html.Div(
         [
@@ -72,9 +74,15 @@ def index():
     State('sample-rate-input', 'value'),
     prevent_initial_call=True,
 )
-def num_click(_, mode, sample_rate):
+def num_click(_, mode, sample_rate_kHz):
 
     btn_index = eval(ctx.triggered[0]['prop_id'].split('.')[0])['index']
+
+    if mode == 'Single':
+
+        signal = get_signal(btn_index, sample_rate_kHz, 0.5, 0.125)
+
+        return '', signal.get_graph()
 
     return no_update, no_update
 
