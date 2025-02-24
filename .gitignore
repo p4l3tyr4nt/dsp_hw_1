@@ -6,3 +6,6 @@
 
 # ignore virtual environment
 venv/
+
+# ignore generated audio files
+audio/
