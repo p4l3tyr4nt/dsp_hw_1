@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -22,6 +23,8 @@ class Signal:
     def generate_audio(self, sample_rate_kHz: int):
         amplitude = np.iinfo(np.int16).max
         audio_data = amplitude * self.x / np.max(self.x)
+        if not os.path.exists('audio/'):
+            os.makedir('audio/')
         write('audio/dtmf.wav', int(sample_rate_kHz * 1e3), audio_data.astype(np.int16))
 
 def get_signal(num: str, sample_rate_kHz: int, duration: float = 1) -> Signal:
