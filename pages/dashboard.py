@@ -4,7 +4,7 @@ import base64
 from dash import Dash, html, dcc, callback, ctx, Output, Input, State, ALL, no_update
 import dash_bootstrap_components as dbc
 
-from dtmf import get_signal
+from dtmf import get_signal, get_multiple_signal
 
 dash.register_page(__name__, path='/')
 
@@ -31,8 +31,11 @@ def index():
             html.H5('', id='number'),
             html.Div(children=
                 [
-                    dbc.Button('Call', id='btn-call', color='success', n_clicks=0, className='input-btn'),
-                ]),
+                    dbc.Button('Call', id='btn-call', color='success', n_clicks=0, className='number-btn'),
+                    dbc.Button('Clear', id='btn-clear', color='success', n_clicks=0, className='number-btn'),
+                ],
+                className='number-menu',
+                ),
         ],
         className='hidden',
     )
@@ -92,13 +95,12 @@ def num_click(_, mode, sample_rate_kHz, number):
     if mode == 'Single':
 
         signal = get_signal(btn_index, sample_rate_kHz)
-
         signal.generate_audio(sample_rate_kHz)
 
         encoded_sound = base64.b64encode(open('audio/dtmf.wav', 'rb').read())
         src = 'data:audio/wav;base64,{}'.format(encoded_sound.decode())
 
-        return '', signal.get_graph(), src
+        return '', signal.get_graph(1/16), src
     
     elif mode == 'Multiple':
 
@@ -107,19 +109,49 @@ def num_click(_, mode, sample_rate_kHz, number):
     return no_update, no_update, no_update
 
 @callback(
-    Output('audio-player', 'src', allow_duplicate=True),
+    [
+        Output('graph-content', 'figure', allow_duplicate=True),
+        Output('audio-player', 'src', allow_duplicate=True),
+    ],
     Input('btn-call', 'n_clicks'),
-    State('sample-rate-input', 'value'),
+    [
+        State('sample-rate-input', 'value'),
+        State('number', 'children'),
+    ],
     prevent_initial_call=True,
 )
-def call_click(_, sample_rate_kHz):
+def call_click(_, sample_rate_kHz, number):    
 
-    pass
+    if number:
+
+        signal = get_multiple_signal(number, sample_rate_kHz)    
+        signal.generate_audio(sample_rate_kHz)
+
+        encoded_sound = base64.b64encode(open('audio/dtmf.wav', 'rb').read())
+        src = 'data:audio/wav;base64,{}'.format(encoded_sound.decode())
+
+        return signal.get_graph(1/32), src
+
+    return no_update, no_update
+
+@callback(
+    [
+        Output('number', 'children', allow_duplicate=True),
+        Output('graph-content', 'figure', allow_duplicate=True),
+        Output('audio-player', 'src', allow_duplicate=True),
+    ],
+    Input('btn-clear', 'n_clicks'),
+    prevent_initial_call=True,
+)
+def clear_click(_):
+
+    return '', [], ''
 
 @callback(
     [
         Output('number-info', 'className'),
         Output('number', 'children', allow_duplicate=True),
+        Output('audio-player', 'src', allow_duplicate=True),
     ],
     Input('mode-choice', 'value'),
     prevent_initial_call=True,
@@ -128,10 +160,10 @@ def mode_choice(mode):
 
     if mode == 'Single':
 
-        return 'hidden', ''
+        return 'hidden', '', ''
     
     if mode == 'Multiple':
 
-        return 'visible', no_update
+        return 'visible', no_update, ''
     
-    return no_update, no_update
+    return no_update, no_update, no_update

@@ -23,12 +23,24 @@
         background-color: #1F2229;
 }
 
+.number-menu {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+}
+
 .input-menu {
         margin-top: 10px;
         display: flex;
         flex-wrap: wrap;
-        display: flex;
         justify-content: space-between;
+}
+
+.number-btn {
+        width: 48%;
+        flex-grow: 1;
+        margin: 1px;
 }
 
 .input-btn {

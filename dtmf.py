@@ -15,7 +15,7 @@ class Signal:
         self.x = x
         self.t = t
     
-    def get_graph(self, part: float = 0.125):
+    def get_graph(self, part: float):
         last = int(len(self.x) * part)
         df = pd.DataFrame({'Signal': self.x[:last], 't': self.t[:last]})
         return px.line(df, x='t', y='Signal', title=f'Signal for {self.num}')
@@ -26,6 +26,9 @@ class Signal:
         if not os.path.exists('audio/'):
             os.makedir('audio/')
         write('audio/dtmf.wav', int(sample_rate_kHz * 1e3), audio_data.astype(np.int16))
+
+    def concat(self, signal):
+        return Signal(self.num + signal.num, np.concatenate([self.x, signal.x]), np.concatenate([self.t, np.max(self.t) + signal.t]))
 
 def get_signal(num: str, sample_rate_kHz: int, duration: float = 1) -> Signal:
 
@@ -55,3 +58,11 @@ def get_signal(num: str, sample_rate_kHz: int, duration: float = 1) -> Signal:
     x = np.sin(2 * np.pi * freq_1 * t) + np.sin(2 * np.pi * freq_2 * t)
 
     return Signal(num, x, t)
+
+def get_multiple_signal(nums: str, sample_rate_kHz: int, num_duration: float = 0.5) -> Signal:
+    
+    signal = Signal('', np.array([0]), np.array([0]))
+    for num in nums:
+        signal = signal.concat(get_signal(num, sample_rate_kHz, num_duration))
+
+    return signal
