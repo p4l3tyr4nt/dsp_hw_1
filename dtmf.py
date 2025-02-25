@@ -39,8 +39,8 @@ def get_signal(num: str, sample_rate_kHz: int, duration: float = 1) -> Signal:
             idx_1 = 1
             idx_2 = 3
         else:
-            idx_1 = np.where(freq_matrix==int(num))[0][0]
-            idx_2 = np.where(freq_matrix==int(num))[1][0]
+            idx_1 = np.where(freq_matrix==int(num))[1][0]
+            idx_2 = np.where(freq_matrix==int(num))[0][0]
     else:
         if num == '*':
             idx_1 = 0

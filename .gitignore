@@ -9,3 +9,6 @@ venv/
 
 # ignore generated audio files
 audio/
+
+# ignore .bat
+*.bat
